@@ -8,11 +8,10 @@ package taskmanager;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import org.apache.derby.jdbc.*;
 import java.util.ArrayList;
+import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -24,16 +23,16 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private ResultSet rs;
     private ResultSet rs_tablenames;
     private Statement stmt;
-    ArrayList<String> tablenames = new ArrayList<String>();
+    ArrayList<String> tablenames = new ArrayList<>();
 //    private String addList = JOptionPane.showInputDialog("New Task List Name (type default if not known): ");
-    private String addList =  "default_table";
+    private String addList = "default_table";
 //    private String addList;
 //    Tasklistadder tasklistadder;
 //    Tasklistadder tasklistadder = new Tasklistadder();
 //    tasklistadder.setVisible(true);
 //    private String addList = tasklistadder.txtAddTaskList.getText();
 
-    private String dbURI = "jdbc:derby:ListDB;create=true";
+    private final String dbURI = "jdbc:derby:ListDB;create=true";
 
     /**
      * Creates new form TaskManager
@@ -90,7 +89,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 //            while(rs_tablenames.next()){
 //                JOptionPane.showMessageDialog(this, rs_tablenames.getString("TABLE_NAME"));
 //            } 
-            
+
             //ResultSet is scrollable and updatable
             rs.first();
         } catch (SQLException ex) {
@@ -126,16 +125,15 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlInsert = new javax.swing.JPanel();
-        btnInsert = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
         pnlInput = new javax.swing.JPanel();
+        btnAddList = new javax.swing.JButton();
+        btnDeleteList = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        btnDeleteList = new javax.swing.JButton();
-        btnAddList1 = new javax.swing.JButton();
-        txtStatus = new taskmanager.JStatusField();
+        String[] charList = {"Y", "y", "N", "n"};
+        txtStatus = new JTextField("N");
+        ((AbstractDocument)txtStatus.getDocument()).setDocumentFilter(new LimitedDocFilter(1, charList));
         pnlButtons = new javax.swing.JPanel();
         pnlNav = new javax.swing.JPanel();
         btnFirst = new javax.swing.JButton();
@@ -146,104 +144,56 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         btnNew = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        pnlInsert = new javax.swing.JPanel();
+        btnInsert = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Contact Manager");
+        setTitle("Task Manager");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
-        btnInsert.setText("Insert Task");
-        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+        pnlInput.setLayout(new java.awt.GridLayout(3, 2, 5, 5));
+
+        btnAddList.setText("Add List");
+        btnAddList.setToolTipText("Add a task list.");
+        btnAddList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInsertActionPerformed(evt);
+                btnAddListActionPerformed(evt);
             }
         });
-        pnlInsert.add(btnInsert);
-
-        btnCancel.setText("Cancel");
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
-        pnlInsert.add(btnCancel);
-
-        getContentPane().add(pnlInsert, java.awt.BorderLayout.SOUTH);
-
-        jLabel1.setText("Task Name");
-
-        jLabel2.setText("Status(y/n)");
+        pnlInput.add(btnAddList);
 
         btnDeleteList.setText("Delete List");
+        btnDeleteList.setToolTipText("Delete a task list.");
         btnDeleteList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteListActionPerformed(evt);
             }
         });
+        pnlInput.add(btnDeleteList);
 
-        btnAddList1.setText("Add List");
-        btnAddList1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddList1ActionPerformed(evt);
-            }
-        });
+        jLabel1.setText("Task Name");
+        pnlInput.add(jLabel1);
 
-        txtStatus.setText("jIntegerField1");
-        txtStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtStatusActionPerformed(evt);
-            }
-        });
+        txtName.setToolTipText("Enter name and description of the task.");
+        pnlInput.add(txtName);
 
-        javax.swing.GroupLayout pnlInputLayout = new javax.swing.GroupLayout(pnlInput);
-        pnlInput.setLayout(pnlInputLayout);
-        pnlInputLayout.setHorizontalGroup(
-            pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlInputLayout.createSequentialGroup()
-                .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlInputLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                            .addComponent(txtStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(pnlInputLayout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(btnAddList1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteList)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        pnlInputLayout.setVerticalGroup(
-            pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlInputLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDeleteList)
-                    .addComponent(btnAddList1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jLabel2.setText("Task completed? (Y/N)");
+        pnlInput.add(jLabel2);
+
+        txtStatus.setToolTipText("Status of the task (y for yes, n for no)");
+        pnlInput.add(txtStatus);
 
         getContentPane().add(pnlInput, java.awt.BorderLayout.PAGE_START);
 
         pnlButtons.setLayout(new java.awt.GridLayout(2, 1));
 
         btnFirst.setText("<<");
+        btnFirst.setToolTipText("First record in the task list.");
         btnFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFirstActionPerformed(evt);
@@ -252,6 +202,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         pnlNav.add(btnFirst);
 
         btnPrevious.setText("<");
+        btnPrevious.setToolTipText("Previous record in the task list.");
         btnPrevious.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPreviousActionPerformed(evt);
@@ -260,6 +211,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         pnlNav.add(btnPrevious);
 
         btnNext.setText(">");
+        btnNext.setToolTipText("Next record in the task list.");
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNextActionPerformed(evt);
@@ -268,6 +220,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         pnlNav.add(btnNext);
 
         btnLast.setText(">>");
+        btnLast.setToolTipText("Last/final record in the task list.");
         btnLast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLastActionPerformed(evt);
@@ -278,6 +231,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         pnlButtons.add(pnlNav);
 
         btnNew.setText("New Task");
+        btnNew.setToolTipText("Create a new  task.");
         btnNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewActionPerformed(evt);
@@ -285,7 +239,8 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         });
         pnlControls.add(btnNew);
 
-        btnUpdate.setText("Update Info");
+        btnUpdate.setText("Update Task");
+        btnUpdate.setToolTipText("Update information about the task (e.g. whether it's been completed or not)");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -294,6 +249,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         pnlControls.add(btnUpdate);
 
         btnDelete.setText("Delete Task");
+        btnDelete.setToolTipText("Delete the task from the list.");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -305,7 +261,27 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         getContentPane().add(pnlButtons, java.awt.BorderLayout.CENTER);
 
-        setSize(new java.awt.Dimension(401, 308));
+        btnInsert.setText("Insert Task");
+        btnInsert.setToolTipText("Insert a task into the list after clicking New Task.");
+        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertActionPerformed(evt);
+            }
+        });
+        pnlInsert.add(btnInsert);
+
+        btnCancel.setText("Cancel");
+        btnCancel.setToolTipText("Cancel the app?");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+        pnlInsert.add(btnCancel);
+
+        getContentPane().add(pnlInsert, java.awt.BorderLayout.SOUTH);
+
+        setSize(new java.awt.Dimension(439, 308));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -404,7 +380,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             //refresh the ResultSet
             rs = stmt.executeQuery("select * from " + addList);
             rs.last();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         } finally {
             pnlInsert.setVisible(false);
@@ -417,7 +393,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         try {
             rs.moveToCurrentRow();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         } finally {
             pnlInsert.setVisible(false);
@@ -433,29 +409,29 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             stmt = null;
             con.close();
             con = null;
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
 
         }
     }//GEN-LAST:event_formWindowClosing
 
     private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        String displaylist = ""; 
+        String displaylist = "";
         int i = 1;
         int j = 0;
-        try {         
+        try {
             DatabaseMetaData dbmd = con.getMetaData();
             String[] types = {"TABLE"};
             ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
-            while(rs_tablenames.next()){
+            while (rs_tablenames.next()) {
                 displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
-            } 
-            
+            }
+
             //ResultSet is scrollable and updatable
             rs.first();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-        
+
 //        for (int i=0; i < tablenames.size();i++){
 //            displaylist += tablenames.get(i) +"\n";       
 //        }
@@ -463,13 +439,31 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         tskAdd.setVisible(true);
     }//GEN-LAST:event_btnDeleteListActionPerformed
 
-    private void btnAddList1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddList1ActionPerformed
+    private void btnAddListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddListActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnAddList1ActionPerformed
+        String displaylist = "";
+        int i = 1;
+        int j = 0;
+        try {
+            DatabaseMetaData dbmd = con.getMetaData();
+            String[] types = {"TABLE"};
+            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
+            while (rs_tablenames.next()) {
+                displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
+            }
 
-    private void txtStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtStatusActionPerformed
+            //ResultSet is scrollable and updatable
+            rs.first();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+
+//        for (int i=0; i < tablenames.size();i++){
+//            displaylist += tablenames.get(i) +"\n";       
+//        }
+        tskAdd.txtTableNames.setText(displaylist);
+        tskAdd.setVisible(true);
+    }//GEN-LAST:event_btnAddListActionPerformed
 
     /**
      * @param args the command line arguments
@@ -501,6 +495,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new TaskManager().setVisible(true);
             }
@@ -508,7 +503,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddList1;
+    private javax.swing.JButton btnAddList;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDeleteList;
@@ -527,7 +522,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JPanel pnlInsert;
     private javax.swing.JPanel pnlNav;
     private javax.swing.JTextField txtName;
-    private static taskmanager.JStatusField txtStatus;
+    private javax.swing.JTextField txtStatus;
     // End of variables declaration//GEN-END:variables
 
     @Override
