@@ -19,7 +19,7 @@ import javax.swing.text.DocumentFilter;
 public class LimitedDocFilter extends DocumentFilter {
 
     private Pattern regEx;
-//    private Pattern regEx = Pattern.compile("[y][n][Y][N]");
+//    private Pattern regEx = Pattern.compile("^[YNyn]$");
     private int maxCharLength;
 //    private int maxCharLength = 1;
 

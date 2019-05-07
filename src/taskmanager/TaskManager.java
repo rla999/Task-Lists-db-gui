@@ -133,7 +133,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtStatus = new JTextField("N");
-        ((AbstractDocument)txtStatus.getDocument()).setDocumentFilter(new LimitedDocFilter(Pattern.compile("\\d+"), 14));
+        ((AbstractDocument)txtStatus.getDocument()).setDocumentFilter(new LimitedDocFilter(Pattern.compile("^[YNyn]$"), 1));
         pnlButtons = new javax.swing.JPanel();
         pnlNav = new javax.swing.JPanel();
         btnFirst = new javax.swing.JButton();
