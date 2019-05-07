@@ -5,6 +5,9 @@
  */
 package taskmanager;
 
+import java.awt.Toolkit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -15,37 +18,23 @@ import javax.swing.text.DocumentFilter;
  */
 public class LimitedDocFilter extends DocumentFilter {
 
-    private int limit;
-    private String[] charList;
+    private Pattern regEx;
+//    private Pattern regEx = Pattern.compile("[y][n][Y][N]");
+    private int maxCharLength;
+//    private int maxCharLength = 1;
 
-    public LimitedDocFilter(int limit, String[] charList) {
-        if (limit <= 0) {
-            throw new IllegalArgumentException("Limit can not be <= 0");
-        }
-        this.limit = limit;
-        this.charList = charList;
-    }
-
-    public boolean validateChar(String exp) {
-        int len = charList.length;
-        for (int i = 0; i < len; i++) {
-            if (exp.equals(charList[i])) {
-                return true;
-            }
-        }
-        return false;
+    public LimitedDocFilter(Pattern regEx, int maxCharLength) {
+        this.regEx = regEx;
+        this.maxCharLength = maxCharLength;
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        int currentLength = fb.getDocument().getLength();
-        int overLimit = (currentLength + text.length()) - limit - length;
-        if (overLimit > 0) {
-            text = text.substring(0, text.length() - overLimit);
-        }
-        if (text.length() >= 0 || length >= 0 || validateChar(text)) {
+        Matcher matcher = regEx.matcher(text);
+        if ((fb.getDocument().getLength() + text.length()) <= maxCharLength && matcher.matches()) {
             super.replace(fb, offset, length, text, attrs);
         } else {
+            Toolkit.getDefaultToolkit().beep();
         }
     }
 

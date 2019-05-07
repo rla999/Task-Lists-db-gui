@@ -131,9 +131,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        String[] charList = {"Y", "y", "N", "n"};
         txtStatus = new JTextField("N");
-        ((AbstractDocument)txtStatus.getDocument()).setDocumentFilter(new LimitedDocFilter(1, charList));
         pnlButtons = new javax.swing.JPanel();
         pnlNav = new javax.swing.JPanel();
         btnFirst = new javax.swing.JButton();
