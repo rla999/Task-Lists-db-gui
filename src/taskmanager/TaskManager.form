@@ -81,6 +81,7 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JTextField(&quot;N&quot;);"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="((AbstractDocument)txtStatus.getDocument()).setDocumentFilter(new LimitedDocFilter(Pattern.compile(&quot;\\d+&quot;), 14));"/>
           </AuxValues>
         </Component>
       </SubComponents>
