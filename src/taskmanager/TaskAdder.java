@@ -5,6 +5,8 @@
  */
 package taskmanager;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author JiaLenovo
@@ -15,14 +17,19 @@ public class TaskAdder extends javax.swing.JFrame {
      * Creates new form TaskAdder
      */
     String list;
+    String deleteList;
 
     public String getList() {
         return list;
+    }
+    public String getDeleteList(){
+        return deleteList;
     }
 
     public TaskAdder() {
         initComponents();
         list = "";
+        deleteList = "";
     }
 
     /**
@@ -35,46 +42,44 @@ public class TaskAdder extends javax.swing.JFrame {
     private void initComponents() {
 
         pnlTaskLists = new javax.swing.JPanel();
-        pnlListItems = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        txtSelectedList = new javax.swing.JTextField();
         pnlListButtons = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        tableSelector = new javax.swing.JComboBox<>();
         btnAddEditList = new javax.swing.JButton();
         btnDeleteList = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtTableNames = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        AddTable = new javax.swing.JButton();
+        txtSelectedList = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Your Lists | Task Manager");
         setPreferredSize(new java.awt.Dimension(566, 370));
+        getContentPane().setLayout(new java.awt.FlowLayout());
 
         pnlTaskLists.setAutoscrolls(true);
         pnlTaskLists.setMinimumSize(new java.awt.Dimension(546, 296));
         pnlTaskLists.setPreferredSize(new java.awt.Dimension(546, 350));
-        pnlTaskLists.setLayout(new java.awt.GridLayout(3, 1, 5, 8));
 
-        pnlListItems.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
+        pnlListButtons.setPreferredSize(new java.awt.Dimension(315, 10));
 
-        jLabel1.setText("Selected Task List");
-        jLabel1.setToolTipText("");
-        pnlListItems.add(jLabel1);
+        jLabel2.setText("Select Table");
 
-        txtSelectedList.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        txtSelectedList.setToolTipText("The currently selected list that will be edited.");
-        pnlListItems.add(txtSelectedList);
+        tableSelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        tableSelector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tableSelectorActionPerformed(evt);
+            }
+        });
 
-        pnlTaskLists.add(pnlListItems);
-
-        pnlListButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-
-        btnAddEditList.setText("Add/Edit List");
+        btnAddEditList.setText("Select List");
         btnAddEditList.setToolTipText("Add or Edit the List");
         btnAddEditList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddEditListActionPerformed(evt);
             }
         });
-        pnlListButtons.add(btnAddEditList);
 
         btnDeleteList.setText("Delete List");
         btnDeleteList.setToolTipText("Delete the list! Warning! No undo!");
@@ -83,31 +88,148 @@ public class TaskAdder extends javax.swing.JFrame {
                 btnDeleteListActionPerformed(evt);
             }
         });
-        pnlListButtons.add(btnDeleteList);
 
-        pnlTaskLists.add(pnlListButtons);
+        javax.swing.GroupLayout pnlListButtonsLayout = new javax.swing.GroupLayout(pnlListButtons);
+        pnlListButtons.setLayout(pnlListButtonsLayout);
+        pnlListButtonsLayout.setHorizontalGroup(
+            pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlListButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tableSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(btnAddEditList)
+                .addGap(5, 5, 5)
+                .addComponent(btnDeleteList)
+                .addContainerGap(241, Short.MAX_VALUE))
+        );
+        pnlListButtonsLayout.setVerticalGroup(
+            pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlListButtonsLayout.createSequentialGroup()
+                .addGroup(pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlListButtonsLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tableSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addGroup(pnlListButtonsLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(btnAddEditList))
+                    .addGroup(pnlListButtonsLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(btnDeleteList)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
+        txtTableNames.setEditable(false);
         txtTableNames.setColumns(20);
+        txtTableNames.setLineWrap(true);
         txtTableNames.setRows(5);
         txtTableNames.setToolTipText("The master list of all of your task lists.");
         txtTableNames.setWrapStyleWord(true);
         jScrollPane1.setViewportView(txtTableNames);
 
-        pnlTaskLists.add(jScrollPane1);
+        jLabel1.setText("Enter New Table Name");
+        jLabel1.setToolTipText("");
+        jLabel1.setPreferredSize(new java.awt.Dimension(85, 20));
 
-        getContentPane().add(pnlTaskLists, java.awt.BorderLayout.CENTER);
+        AddTable.setText("Add");
+        AddTable.setToolTipText("Add or Edit the List");
+        AddTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddTableActionPerformed(evt);
+            }
+        });
+
+        txtSelectedList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSelectedListActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlTaskListsLayout = new javax.swing.GroupLayout(pnlTaskLists);
+        pnlTaskLists.setLayout(pnlTaskListsLayout);
+        pnlTaskListsLayout.setHorizontalGroup(
+            pnlTaskListsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTaskListsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSelectedList, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(AddTable)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(pnlTaskListsLayout.createSequentialGroup()
+                .addGroup(pnlTaskListsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlListButtons, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE))
+                .addContainerGap(3, Short.MAX_VALUE))
+        );
+        pnlTaskListsLayout.setVerticalGroup(
+            pnlTaskListsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTaskListsLayout.createSequentialGroup()
+                .addGroup(pnlTaskListsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlTaskListsLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(pnlTaskListsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(AddTable)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlTaskListsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtSelectedList, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlListButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(47, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(pnlTaskLists);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddEditListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEditListActionPerformed
-        list = txtSelectedList.getText();
+        if(txtSelectedList.getText().isEmpty() == false){
+            list = txtSelectedList.getText();
+        }
+        else{
+            list = tableSelector.getSelectedItem().toString();
+        }
+        deleteList = "";
         this.dispose();
     }//GEN-LAST:event_btnAddEditListActionPerformed
 
     private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        // TODO add your handling code here:
+        if(txtSelectedList.getText().isEmpty() == false){
+            deleteList = txtSelectedList.getText();
+        }
+        else{
+            deleteList = tableSelector.getSelectedItem().toString();
+        }
+            list = "";
+            this.dispose();
     }//GEN-LAST:event_btnDeleteListActionPerformed
+
+    private void tableSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableSelectorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableSelectorActionPerformed
+
+    private void AddTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTableActionPerformed
+        if(txtSelectedList.getText().isEmpty() == false){
+            list = txtSelectedList.getText();
+        }
+        else{
+            list = tableSelector.getSelectedItem().toString();
+        }
+        deleteList = "";
+        this.dispose();
+    }//GEN-LAST:event_AddTableActionPerformed
+
+    private void txtSelectedListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectedListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSelectedListActionPerformed
 
     /**
      * @param args the command line arguments
@@ -142,14 +264,16 @@ public class TaskAdder extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddTable;
     private javax.swing.JButton btnAddEditList;
     private javax.swing.JButton btnDeleteList;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlListButtons;
-    private javax.swing.JPanel pnlListItems;
     private javax.swing.JPanel pnlTaskLists;
-    public javax.swing.JTextField txtSelectedList;
+    public javax.swing.JComboBox<String> tableSelector;
+    private javax.swing.JTextField txtSelectedList;
     public javax.swing.JTextArea txtTableNames;
     // End of variables declaration//GEN-END:variables
 }

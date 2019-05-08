@@ -27,6 +27,8 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     ArrayList<String> tablenames = new ArrayList<>();
 //    private String addList = JOptionPane.showInputDialog("New Task List Name (type default if not known): ");
     private String addList = "default_table";
+    private String removeList = "";
+    DatabaseMetaData dbmd;
 //    private String addList;
 //    Tasklistadder tasklistadder;
 //    Tasklistadder tasklistadder = new Tasklistadder();
@@ -48,9 +50,6 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         createDBTable();
         getResultSet();
         displayResults();
-        tskAdd = new TaskAdder();
-        tskAdd.addWindowListener(this);
-
         // tskAdd.setVisible(true);
         pnlInsert.setVisible(false);
         pack();
@@ -66,57 +65,113 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     }
 
     private void createDBTable() {
-        try {
-            DriverManager.registerDriver(new EmbeddedDriver());
-            con = DriverManager.getConnection(dbURI);
-            String sql = "create table " + addList + " (name varchar(30), status varchar(30))";
-            stmt = con.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException ex) {
-            if (ex.getErrorCode() != 30000) {
-                //Error Code 30000: Table already exists - not an error!
+        if (stmt != null){
+            try{
+                stmt.close();
+                rs.close();
+            }
+            catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            }
+        if(addList.isEmpty() == false){
+            try {
+                DriverManager.registerDriver(new EmbeddedDriver());
+                con = DriverManager.getConnection(dbURI);
+                String sql = "create table " + addList + " (name varchar(30), status varchar(30))";
+                stmt = con.createStatement();
+                stmt.execute(sql);
+            } catch (SQLException ex) {
+                if (ex.getErrorCode() != 30000) {
+                    //Error Code 30000: Table already exists - not an error!
+                    JOptionPane.showMessageDialog(this, "createTable: " + ex.getMessage());
+                }
+            }
+        }
+    }
+    private void deleteDBTable() {
+        if (stmt != null){
+            try{
+                stmt.close();
+            }
+            catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            }
+        if(removeList.isEmpty() == false){
+            try {
+                String sql = "drop table " + removeList;
+                stmt = con.createStatement();
+                stmt.execute(sql);
+            } catch (SQLException ex) {
+                if (ex.getErrorCode() != 30000) {
+                    //Error Code 30000: Table already exists - not an error!
+                    JOptionPane.showMessageDialog(this, "deleteTable: " + ex.getMessage());
+                }
             }
         }
     }
 
     private void getResultSet() {
-        try {
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = stmt.executeQuery("select " + addList + ".* from " + addList);
-//            DatabaseMetaData dbmd = con.getMetaData();
-//            String[] types = {"TABLE"};
-//            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
-//            while(rs_tablenames.next()){
-//                JOptionPane.showMessageDialog(this, rs_tablenames.getString("TABLE_NAME"));
-//            } 
+        if(addList.isEmpty() == false){
+            try {
+                stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                rs = stmt.executeQuery("select " + addList + ".* from " + addList);
+    //            DatabaseMetaData dbmd = con.getMetaData();
+    //            String[] types = {"TABLE"};
+    //            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
+    //            while(rs_tablenames.next()){
+    //                JOptionPane.showMessageDialog(this, rs_tablenames.getString("TABLE_NAME"));
+    //            } 
 
-            //ResultSet is scrollable and updatable
-            rs.first();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        }
-    }
-
-    private void displayResults() {
-        try {
-            txtName.setText(rs.getString("name"));
-            txtStatus.setText(rs.getString("status"));
-
-        } catch (SQLException ex) {
-            if (ex.getErrorCode() == 20000) {
-                //Invalid Cursor State - no records in ResultSet
-                JOptionPane.showMessageDialog(this, "Click New Contact to get started");
-                //In case the only record was deleted...
-                txtName.setText("");
-                txtStatus.setText("");
-
-            } else {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                //ResultSet is scrollable and updatable
+                rs.first();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "getResultSet: " + ex.getMessage());
             }
         }
     }
 
+    private void displayResults() {
+        if(addList.isEmpty() == false){
+            try {
+                txtName.setText(rs.getString("name"));
+                txtStatus.setText(rs.getString("status"));
+            } catch (SQLException ex) {
+                if (ex.getErrorCode() == 20000) {
+                    //Invalid Cursor State - no records in ResultSet
+//                    JOptionPane.showMessageDialog(this, "Click New Task to get started");
+                    //In case the only record was deleted...
+                    txtName.setText("");
+                    txtStatus.setText("");
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "displayResults: " + ex.getMessage());
+                }
+            }
+        }
+    }
+    private void addList(){
+        String displaylist = "";
+        ArrayList<String> tableList = new ArrayList<String>();
+        try {
+            if (rs_tablenames != null)
+                rs_tablenames.close();
+            dbmd = con.getMetaData();
+            String[] types = {"TABLE"};
+            rs_tablenames = dbmd.getTables(null, null, "%", types);
+            while (rs_tablenames.next()) {
+                displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
+                tableList.add(rs_tablenames.getString("TABLE_NAME"));
+            }
+            
+            //ResultSet is scrollable and updatable
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "btnAddList: " + ex.getMessage());
+        }
+            tskAdd.txtTableNames.setText(displaylist);
+            tskAdd.tableSelector.setModel(new DefaultComboBoxModel(tableList.toArray()));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,7 +183,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         pnlInput = new javax.swing.JPanel();
         btnAddList = new javax.swing.JButton();
-        btnDeleteList = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -158,7 +213,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         pnlInput.setLayout(new java.awt.GridLayout(3, 2, 5, 5));
 
-        btnAddList.setText("Add List");
+        btnAddList.setText("Add/Remove List");
         btnAddList.setToolTipText("Add a task list.");
         btnAddList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,15 +221,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             }
         });
         pnlInput.add(btnAddList);
-
-        btnDeleteList.setText("Delete List");
-        btnDeleteList.setToolTipText("Delete a task list.");
-        btnDeleteList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteListActionPerformed(evt);
-            }
-        });
-        pnlInput.add(btnDeleteList);
+        pnlInput.add(jLabel3);
 
         jLabel1.setText("Task Name");
         pnlInput.add(jLabel1);
@@ -281,7 +328,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         getContentPane().add(pnlInsert, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(439, 308));
+        setSize(new java.awt.Dimension(345, 300));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -290,7 +337,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             rs.first();
             displayResults();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnFirst: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnFirstActionPerformed
 
@@ -303,7 +350,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
                 displayResults();
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnPrevious: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnPreviousActionPerformed
 
@@ -316,7 +363,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
                 displayResults();
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnNext: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
@@ -325,7 +372,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             rs.last();
             displayResults();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnLast: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnLastActionPerformed
 
@@ -336,7 +383,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
             rs.updateRow();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnUpdate: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -355,7 +402,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
                 displayResults();
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnDelete: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -367,7 +414,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             rs.moveToInsertRow();
             displayResults();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnNew: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnNewActionPerformed
 
@@ -381,7 +428,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             rs = stmt.executeQuery("select * from " + addList);
             rs.last();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnInsert: " + ex.getMessage());
         } finally {
             pnlInsert.setVisible(false);
             pnlButtons.setVisible(true);
@@ -394,7 +441,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         try {
             rs.moveToCurrentRow();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "btnCancel: " + ex.getMessage());
         } finally {
             pnlInsert.setVisible(false);
             pnlButtons.setVisible(true);
@@ -414,55 +461,41 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        String displaylist = "";
-        int i = 1;
-        int j = 0;
-        try {
-            DatabaseMetaData dbmd = con.getMetaData();
-            String[] types = {"TABLE"};
-            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
-            while (rs_tablenames.next()) {
-                displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
-            }
-
-            //ResultSet is scrollable and updatable
-            rs.first();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        }
-
-//        for (int i=0; i < tablenames.size();i++){
-//            displaylist += tablenames.get(i) +"\n";       
-//        }
-        tskAdd.txtTableNames.setText(displaylist);
-        tskAdd.setVisible(true);
-    }//GEN-LAST:event_btnDeleteListActionPerformed
-
     private void btnAddListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddListActionPerformed
         // TODO add your handling code here:
-        String displaylist = "";
-        int i = 1;
-        int j = 0;
-        try {
-            DatabaseMetaData dbmd = con.getMetaData();
-            String[] types = {"TABLE"};
-            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
-            while (rs_tablenames.next()) {
-                displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
-            }
-
-            //ResultSet is scrollable and updatable
-            rs.first();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+        if (tskAdd == null){
+            tskAdd = new TaskAdder();
+            tskAdd.addWindowListener(this);
+            tskAdd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            tskAdd.setVisible(true);
         }
-
+        else{
+            JOptionPane.showMessageDialog(null, "Window already open");
+        }
+        addList();
+//        String displaylist = "";
+//        ArrayList<String> tableList = new ArrayList<String>();
+//        try {
+//            if (rs_tablenames != null)
+//                rs_tablenames.close();
+//            dbmd = con.getMetaData();
+//            String[] types = {"TABLE"};
+//            rs_tablenames = dbmd.getTables(null, null, "%", types);
+//            while (rs_tablenames.next()) {
+//                displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
+//                tableList.add(rs_tablenames.getString("TABLE_NAME"));
+//            }
+//            
+//            //ResultSet is scrollable and updatable
+//        } catch (SQLException ex) {
+//            JOptionPane.showMessageDialog(this, "btnAddList: " + ex.getMessage());
+//        }
+//            tskAdd.txtTableNames.setText(displaylist);
+//            tskAdd.tableSelector.setModel(new DefaultComboBoxModel(tableList.toArray()));
 //        for (int i=0; i < tablenames.size();i++){
 //            displaylist += tablenames.get(i) +"\n";       
 //        }
-        tskAdd.txtTableNames.setText(displaylist);
-        tskAdd.setVisible(true);
+
     }//GEN-LAST:event_btnAddListActionPerformed
 
     /**
@@ -506,7 +539,6 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnAddList;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnDeleteList;
     private javax.swing.JButton btnFirst;
     private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLast;
@@ -516,6 +548,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel pnlButtons;
     private javax.swing.JPanel pnlControls;
     private javax.swing.JPanel pnlInput;
@@ -538,14 +571,36 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
-        System.out.print("closing");
-
-        addList = tskAdd.getList();
-        System.out.print("addlist is:" + addList);
-        tablenames.add(addList);
-        createDBTable();
-        getResultSet();
-        displayResults();
+        if((tskAdd.getList().isEmpty() == false)){
+            //addList function
+            addList = tskAdd.getList();
+            tablenames.add(addList);
+            createDBTable();
+            getResultSet();
+            displayResults();
+            tskAdd = null;
+        }
+        else if(tskAdd.getDeleteList().isEmpty() == false){
+            removeList = tskAdd.getDeleteList();
+            tablenames.remove(removeList);
+            deleteDBTable();
+            displayResults();
+            tskAdd = null;
+            if (tskAdd == null){
+            tskAdd = new TaskAdder();
+            tskAdd.addWindowListener(this);
+            tskAdd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            tskAdd.setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Window already open");
+        }
+        addList();
+        }
+        else
+            {JOptionPane.showMessageDialog(null, "No selection made.");
+            tskAdd = null;
+        }
     }
 
     @Override
