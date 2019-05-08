@@ -5,8 +5,6 @@
  */
 package taskmanager;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author JiaLenovo
@@ -22,7 +20,8 @@ public class TaskAdder extends javax.swing.JFrame {
     public String getList() {
         return list;
     }
-    public String getDeleteList(){
+
+    public String getDeleteList() {
         return deleteList;
     }
 
@@ -191,10 +190,9 @@ public class TaskAdder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddEditListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEditListActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             list = txtSelectedList.getText();
-        }
-        else{
+        } else {
             list = tableSelector.getSelectedItem().toString();
         }
         deleteList = "";
@@ -202,14 +200,13 @@ public class TaskAdder extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddEditListActionPerformed
 
     private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             deleteList = txtSelectedList.getText();
-        }
-        else{
+        } else {
             deleteList = tableSelector.getSelectedItem().toString();
         }
-            list = "";
-            this.dispose();
+        list = "";
+        this.dispose();
     }//GEN-LAST:event_btnDeleteListActionPerformed
 
     private void tableSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableSelectorActionPerformed
@@ -217,10 +214,9 @@ public class TaskAdder extends javax.swing.JFrame {
     }//GEN-LAST:event_tableSelectorActionPerformed
 
     private void AddTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTableActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             list = txtSelectedList.getText();
-        }
-        else{
+        } else {
             list = tableSelector.getSelectedItem().toString();
         }
         deleteList = "";
@@ -251,7 +247,7 @@ public class TaskAdder extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TaskAdder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */

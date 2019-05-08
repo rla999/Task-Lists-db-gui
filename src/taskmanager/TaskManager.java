@@ -65,16 +65,15 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     }
 
     private void createDBTable() {
-        if (stmt != null){
-            try{
+        if (stmt != null) {
+            try {
                 stmt.close();
                 rs.close();
-            }
-            catch(SQLException ex){
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            }
-        if(addList.isEmpty() == false){
+        }
+        if (addList.isEmpty() == false) {
             try {
                 DriverManager.registerDriver(new EmbeddedDriver());
                 con = DriverManager.getConnection(dbURI);
@@ -89,16 +88,16 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             }
         }
     }
+
     private void deleteDBTable() {
-        if (stmt != null){
-            try{
+        if (stmt != null) {
+            try {
                 stmt.close();
-            }
-            catch(SQLException ex){
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            }
-        if(removeList.isEmpty() == false){
+        }
+        if (removeList.isEmpty() == false) {
             try {
                 String sql = "drop table " + removeList;
                 stmt = con.createStatement();
@@ -113,16 +112,16 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     }
 
     private void getResultSet() {
-        if(addList.isEmpty() == false){
+        if (addList.isEmpty() == false) {
             try {
                 stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 rs = stmt.executeQuery("select " + addList + ".* from " + addList);
-    //            DatabaseMetaData dbmd = con.getMetaData();
-    //            String[] types = {"TABLE"};
-    //            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
-    //            while(rs_tablenames.next()){
-    //                JOptionPane.showMessageDialog(this, rs_tablenames.getString("TABLE_NAME"));
-    //            } 
+                //            DatabaseMetaData dbmd = con.getMetaData();
+                //            String[] types = {"TABLE"};
+                //            ResultSet rs_tablenames = dbmd.getTables(null, null, "%", types);
+                //            while(rs_tablenames.next()){
+                //                JOptionPane.showMessageDialog(this, rs_tablenames.getString("TABLE_NAME"));
+                //            } 
 
                 //ResultSet is scrollable and updatable
                 rs.first();
@@ -133,7 +132,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     }
 
     private void displayResults() {
-        if(addList.isEmpty() == false){
+        if (addList.isEmpty() == false) {
             try {
                 txtName.setText(rs.getString("name"));
                 txtStatus.setText(rs.getString("status"));
@@ -151,12 +150,14 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             }
         }
     }
-    private void addList(){
+
+    private void addList() {
         String displaylist = "";
-        ArrayList<String> tableList = new ArrayList<String>();
+        ArrayList<String> tableList = new ArrayList<>();
         try {
-            if (rs_tablenames != null)
+            if (rs_tablenames != null) {
                 rs_tablenames.close();
+            }
             dbmd = con.getMetaData();
             String[] types = {"TABLE"};
             rs_tablenames = dbmd.getTables(null, null, "%", types);
@@ -164,14 +165,15 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
                 displaylist += rs_tablenames.getString("TABLE_NAME") + "\n";
                 tableList.add(rs_tablenames.getString("TABLE_NAME"));
             }
-            
+
             //ResultSet is scrollable and updatable
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "btnAddList: " + ex.getMessage());
         }
-            tskAdd.txtTableNames.setText(displaylist);
-            tskAdd.tableSelector.setModel(new DefaultComboBoxModel(tableList.toArray()));
+        tskAdd.txtTableNames.setText(displaylist);
+        tskAdd.tableSelector.setModel(new DefaultComboBoxModel(tableList.toArray()));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -463,13 +465,12 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
     private void btnAddListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddListActionPerformed
         // TODO add your handling code here:
-        if (tskAdd == null){
+        if (tskAdd == null) {
             tskAdd = new TaskAdder();
             tskAdd.addWindowListener(this);
             tskAdd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             tskAdd.setVisible(true);
-        }
-        else{
+        } else {
             JOptionPane.showMessageDialog(null, "Window already open");
         }
         addList();
@@ -571,7 +572,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
-        if((tskAdd.getList().isEmpty() == false)){
+        if ((tskAdd.getList().isEmpty() == false)) {
             //addList function
             addList = tskAdd.getList();
             tablenames.add(addList);
@@ -579,26 +580,23 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             getResultSet();
             displayResults();
             tskAdd = null;
-        }
-        else if(tskAdd.getDeleteList().isEmpty() == false){
+        } else if (tskAdd.getDeleteList().isEmpty() == false) {
             removeList = tskAdd.getDeleteList();
             tablenames.remove(removeList);
             deleteDBTable();
             displayResults();
             tskAdd = null;
-            if (tskAdd == null){
-            tskAdd = new TaskAdder();
-            tskAdd.addWindowListener(this);
-            tskAdd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            tskAdd.setVisible(true);
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "Window already open");
-        }
-        addList();
-        }
-        else
-            {JOptionPane.showMessageDialog(null, "No selection made.");
+            if (tskAdd == null) {
+                tskAdd = new TaskAdder();
+                tskAdd.addWindowListener(this);
+                tskAdd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                tskAdd.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Window already open");
+            }
+            addList();
+        } else {
+            JOptionPane.showMessageDialog(null, "No selection made.");
             tskAdd = null;
         }
     }
