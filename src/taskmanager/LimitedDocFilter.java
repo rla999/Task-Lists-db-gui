@@ -18,9 +18,9 @@ import javax.swing.text.DocumentFilter;
  */
 public class LimitedDocFilter extends DocumentFilter {
 
-    private Pattern regEx;
+    private final Pattern regEx;
 //    private Pattern regEx = Pattern.compile("^[YNyn]$");
-    private int maxCharLength;
+    private final int maxCharLength;
 //    private int maxCharLength = 1;
 
     public LimitedDocFilter(Pattern regEx, int maxCharLength) {
