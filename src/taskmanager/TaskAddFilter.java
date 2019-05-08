@@ -8,7 +8,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 public class TaskAddFilter extends DocumentFilter {
-    private Pattern regEx;
+
+    private final Pattern regEx;
 //    private Pattern regEx = Pattern.compile("[y][n][Y][N]");
 //    private int maxCharLength = 1;
 
@@ -18,15 +19,15 @@ public class TaskAddFilter extends DocumentFilter {
 
     @Override
     public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        
-        Matcher matcher = regEx.matcher("placeholder"); 
-        if (text != null || text != "")
-            matcher= regEx.matcher(text);
-        
+
+        Matcher matcher = regEx.matcher("placeholder");
+        if (text != null || !"".equals(text)) {
+            matcher = regEx.matcher(text);
+        }
+
         if (matcher.matches() == false) {
             super.replace(fb, offset, length, text, attrs);
-        }
-        else{
+        } else {
             Toolkit.getDefaultToolkit().beep();
         }
     }

@@ -25,10 +25,12 @@ public class TaskAdder extends javax.swing.JFrame {
     public String getList() {
         return list;
     }
-    public String getDeleteList(){
+
+    public String getDeleteList() {
         return deleteList;
     }
-    public boolean getTableAdded(){
+
+    public boolean getTableAdded() {
         return tableAdded;
     }
 
@@ -198,37 +200,33 @@ public class TaskAdder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddEditListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEditListActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             list = txtSelectedList.getText();
             deleteList = "";
             this.dispose();
-        }
-        else if(tableSelector.getSelectedItem() == null){
+        } else if (tableSelector.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Nothing to select");
-        }
-        else{
+        } else {
             list = tableSelector.getSelectedItem().toString();
             deleteList = "";
             this.dispose();
         }
-        
+
     }//GEN-LAST:event_btnAddEditListActionPerformed
 
     private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             deleteList = txtSelectedList.getText();
             list = "";
             this.dispose();
-        }
-        else if(tableSelector.getSelectedItem() == null){
+        } else if (tableSelector.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Nothing to delete");
-        }
-        else{
+        } else {
             deleteList = tableSelector.getSelectedItem().toString();
             list = "";
             this.dispose();
         }
-            
+
     }//GEN-LAST:event_btnDeleteListActionPerformed
 
     private void tableSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableSelectorActionPerformed
@@ -236,16 +234,15 @@ public class TaskAdder extends javax.swing.JFrame {
     }//GEN-LAST:event_tableSelectorActionPerformed
 
     private void AddTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTableActionPerformed
-        if(txtSelectedList.getText().isEmpty() == false){
+        if (txtSelectedList.getText().isEmpty() == false) {
             list = txtSelectedList.getText();
             tableAdded = true;
             deleteList = "";
-        this.dispose();
-        }
-        else{
+            this.dispose();
+        } else {
             JOptionPane.showMessageDialog(this, "Please enter a name for your task list");
         }
-        
+
     }//GEN-LAST:event_AddTableActionPerformed
 
     private void txtSelectedListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectedListActionPerformed
@@ -272,7 +269,7 @@ public class TaskAdder extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TaskAdder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
