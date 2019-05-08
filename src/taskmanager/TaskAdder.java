@@ -5,6 +5,10 @@
  */
 package taskmanager;
 
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import javax.swing.text.AbstractDocument;
+
 /**
  *
  * @author JiaLenovo
@@ -16,13 +20,16 @@ public class TaskAdder extends javax.swing.JFrame {
      */
     String list;
     String deleteList;
+    boolean tableAdded = false;
 
     public String getList() {
         return list;
     }
-
-    public String getDeleteList() {
+    public String getDeleteList(){
         return deleteList;
+    }
+    public boolean getTableAdded(){
+        return tableAdded;
     }
 
     public TaskAdder() {
@@ -51,6 +58,7 @@ public class TaskAdder extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         AddTable = new javax.swing.JButton();
         txtSelectedList = new javax.swing.JTextField();
+        ((AbstractDocument)txtSelectedList.getDocument()).setDocumentFilter(new TaskAddFilter(Pattern.compile("[\\s]")));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Your Lists | Task Manager");
@@ -101,7 +109,7 @@ public class TaskAdder extends javax.swing.JFrame {
                 .addComponent(btnAddEditList)
                 .addGap(5, 5, 5)
                 .addComponent(btnDeleteList)
-                .addContainerGap(241, Short.MAX_VALUE))
+                .addContainerGap(199, Short.MAX_VALUE))
         );
         pnlListButtonsLayout.setVerticalGroup(
             pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,23 +198,37 @@ public class TaskAdder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddEditListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEditListActionPerformed
-        if (txtSelectedList.getText().isEmpty() == false) {
+        if(txtSelectedList.getText().isEmpty() == false){
             list = txtSelectedList.getText();
-        } else {
-            list = tableSelector.getSelectedItem().toString();
+            deleteList = "";
+            this.dispose();
         }
-        deleteList = "";
-        this.dispose();
+        else if(tableSelector.getSelectedItem() == null){
+            JOptionPane.showMessageDialog(this, "Nothing to select");
+        }
+        else{
+            list = tableSelector.getSelectedItem().toString();
+            deleteList = "";
+            this.dispose();
+        }
+        
     }//GEN-LAST:event_btnAddEditListActionPerformed
 
     private void btnDeleteListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteListActionPerformed
-        if (txtSelectedList.getText().isEmpty() == false) {
+        if(txtSelectedList.getText().isEmpty() == false){
             deleteList = txtSelectedList.getText();
-        } else {
-            deleteList = tableSelector.getSelectedItem().toString();
+            list = "";
+            this.dispose();
         }
-        list = "";
-        this.dispose();
+        else if(tableSelector.getSelectedItem() == null){
+            JOptionPane.showMessageDialog(this, "Nothing to delete");
+        }
+        else{
+            deleteList = tableSelector.getSelectedItem().toString();
+            list = "";
+            this.dispose();
+        }
+            
     }//GEN-LAST:event_btnDeleteListActionPerformed
 
     private void tableSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableSelectorActionPerformed
@@ -214,13 +236,16 @@ public class TaskAdder extends javax.swing.JFrame {
     }//GEN-LAST:event_tableSelectorActionPerformed
 
     private void AddTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTableActionPerformed
-        if (txtSelectedList.getText().isEmpty() == false) {
+        if(txtSelectedList.getText().isEmpty() == false){
             list = txtSelectedList.getText();
-        } else {
-            list = tableSelector.getSelectedItem().toString();
-        }
-        deleteList = "";
+            tableAdded = true;
+            deleteList = "";
         this.dispose();
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Please enter a name for your task list");
+        }
+        
     }//GEN-LAST:event_AddTableActionPerformed
 
     private void txtSelectedListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectedListActionPerformed
@@ -247,7 +272,7 @@ public class TaskAdder extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TaskAdder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         //</editor-fold>
 
         /* Create and display the form */

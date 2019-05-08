@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package taskmanager;
 
 import java.awt.Toolkit;
@@ -18,9 +13,9 @@ import javax.swing.text.DocumentFilter;
  */
 public class LimitedDocFilter extends DocumentFilter {
 
-    private final Pattern regEx;
-//    private Pattern regEx = Pattern.compile("^[YNyn]$");
-    private final int maxCharLength;
+    private Pattern regEx;
+//    private Pattern regEx = Pattern.compile("[y][n][Y][N]");
+    private int maxCharLength;
 //    private int maxCharLength = 1;
 
     public LimitedDocFilter(Pattern regEx, int maxCharLength) {
@@ -30,12 +25,21 @@ public class LimitedDocFilter extends DocumentFilter {
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        Matcher matcher = regEx.matcher(text);
-        if ((fb.getDocument().getLength() + text.length()) <= maxCharLength && matcher.matches()) {
-            super.replace(fb, offset, length, text, attrs);
-        } else {
-            Toolkit.getDefaultToolkit().beep();
-        }
+        
+        Matcher matcher = regEx.matcher("placeholder"); 
+        if (text != null || text != "")
+            matcher= regEx.matcher(text);
+        
+            if ((fb.getDocument().getLength() + text.length()) <= maxCharLength && matcher.matches()) {
+                super.replace(fb, offset, length, text, attrs);
+            } else if((fb.getDocument().getLength() + text.length()) > maxCharLength && matcher.matches()){
+                super.replace(fb, offset, 1, text, attrs);
+            } else if(text == ""){
+                super.replace(fb, offset, 1, "", attrs);
+            }
+            else{
+                Toolkit.getDefaultToolkit().beep();
+            }
     }
 
 }
