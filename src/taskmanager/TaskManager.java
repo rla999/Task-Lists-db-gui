@@ -5,12 +5,15 @@
  */
 package taskmanager;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.*;
 import javax.swing.*;
 import org.apache.derby.jdbc.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.text.AbstractDocument;
 
@@ -41,6 +44,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
      * Creates new form TaskManager
      */
     TaskAdder tskAdd;
+    TaskListItems tasklist;
 
     public TaskManager() {
 //        this.addList = tasklistadder.txtAddTaskList.getText();
@@ -50,6 +54,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         createDBTable();
         getResultSet();
         displayResults();
+
         // tskAdd.setVisible(true);
         pnlInsert.setVisible(false);
         pack();
@@ -153,7 +158,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
     private void addList() {
         String displaylist = "";
-        ArrayList<String> tableList = new ArrayList<>();
+        ArrayList<String> tableList = new ArrayList<String>();
         try {
             if (rs_tablenames != null) {
                 rs_tablenames.close();
@@ -185,7 +190,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
         pnlInput = new javax.swing.JPanel();
         btnAddList = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        btnListItems = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -223,7 +228,14 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
             }
         });
         pnlInput.add(btnAddList);
-        pnlInput.add(jLabel3);
+
+        btnListItems.setText("Display List");
+        btnListItems.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListItemsActionPerformed(evt);
+            }
+        });
+        pnlInput.add(btnListItems);
 
         jLabel1.setText("Task Name");
         pnlInput.add(jLabel1);
@@ -518,6 +530,30 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtStatusActionPerformed
 
+    private void btnListItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListItemsActionPerformed
+        String ListItems = "";
+        final TaskListItems tasklist = new TaskListItems();
+        tasklist.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                tasklist.dispose();
+            }
+        });
+        tasklist.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        try {
+            rs.first();
+            do {
+                ListItems += rs.getString("name") + rs.getString("status") + "\n";
+            } while (rs.next());
+        } catch (SQLException ex) {
+            Logger.getLogger(TaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        tasklist.setTxtListItems(ListItems);
+        tasklist.setVisible(true);
+
+//            txtListItems.setText();
+    }//GEN-LAST:event_btnListItemsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -562,13 +598,13 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnFirst;
     private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLast;
+    private javax.swing.JButton btnListItems;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrevious;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel pnlButtons;
     private javax.swing.JPanel pnlControls;
     private javax.swing.JPanel pnlInput;

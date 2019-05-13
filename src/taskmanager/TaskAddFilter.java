@@ -9,7 +9,7 @@ import javax.swing.text.DocumentFilter;
 
 public class TaskAddFilter extends DocumentFilter {
 
-    private final Pattern regEx;
+    private Pattern regEx;
 //    private Pattern regEx = Pattern.compile("[y][n][Y][N]");
 //    private int maxCharLength = 1;
 
@@ -21,7 +21,7 @@ public class TaskAddFilter extends DocumentFilter {
     public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 
         Matcher matcher = regEx.matcher("placeholder");
-        if (text != null || !"".equals(text)) {
+        if (text != null || text != "") {
             matcher = regEx.matcher(text);
         }
 

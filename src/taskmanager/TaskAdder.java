@@ -111,7 +111,7 @@ public class TaskAdder extends javax.swing.JFrame {
                 .addComponent(btnAddEditList)
                 .addGap(5, 5, 5)
                 .addComponent(btnDeleteList)
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addContainerGap(241, Short.MAX_VALUE))
         );
         pnlListButtonsLayout.setVerticalGroup(
             pnlListButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
