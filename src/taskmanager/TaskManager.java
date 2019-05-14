@@ -158,7 +158,7 @@ public class TaskManager extends javax.swing.JFrame implements WindowListener {
 
     private void addList() {
         String displaylist = "";
-        ArrayList<String> tableList = new ArrayList<String>();
+        ArrayList<String> tableList = new ArrayList<>();
         try {
             if (rs_tablenames != null) {
                 rs_tablenames.close();

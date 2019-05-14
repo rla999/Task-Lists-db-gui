@@ -5,8 +5,6 @@
  */
 package taskmanager;
 
-import javax.swing.JTextArea;
-
 /**
  *
  * @author JiaLenovo
